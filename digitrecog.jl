@@ -11,15 +11,8 @@ function getimages(filename)
     filepath = pwd() * "/images/" * filename
 
     mtrx = Matrix(DataFrame(CSV.File(filepath)))
-    r, _ = size(mtrx)
 
-    v = Vector{Matrix{Int64}}()
-	
-	for i = 1:r
-		push!(v, reshape(m[i, :], 32, 32))
-	end
-	
-	v
+    return mtrx'
 end
 
 function getlabels(filename)
@@ -97,6 +90,11 @@ function train(; kws...)
     
     ## Optimizer
     opt = ADAM(args.η)
+
+    train_loss = 0.0f0
+    test_loss = 0
+    train_acc = 0
+    test_acc = 0
     
     ## Training
     for epoch in 1:args.epochs
@@ -113,6 +111,8 @@ function train(; kws...)
         println("  train_loss = $train_loss, train_accuracy = $train_acc")
         println("  test_loss = $test_loss, test_accuracy = $test_acc")
     end
+
+    return train_loss, train_acc, test_loss, test_acc
 end
 
 #run training
